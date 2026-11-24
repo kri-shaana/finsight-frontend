@@ -4,9 +4,20 @@ import { Header } from '@/components/layout/Header';
 
 const PAGE_TITLES: Record<string, string> = {
   '/dashboard': 'Dashboard',
-  '/reconciliations': 'Reconciliations',
+  '/transactions': 'Transactions',
   '/settlements': 'Settlements',
-  '/payments': 'Payments',
+  '/file-management': 'File Management',
+  '/reconciliation': 'Reconciliation',
+  '/discrepancies': 'Discrepancies',
+  '/refunds': 'Refunds',
+  '/users': 'Users & Roles',
+  '/organizations': 'Organizations',
+  '/payment-providers': 'Payment Providers',
+  '/approvals': 'Approvals',
+  '/reports': 'Reports',
+  '/audit-logs': 'Audit Logs',
+  '/notifications': 'Notifications',
+  '/system-monitoring': 'System Monitoring',
   '/settings': 'Settings',
 };
 

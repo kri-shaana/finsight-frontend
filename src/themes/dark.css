@@ -1,0 +1,32 @@
+/* FinSight — Midnight Petrol Dark Theme */
+
+[data-theme='dark'] {
+  --color-bg:           #101C20;
+  --color-sidebar:      #142226;
+  --color-card:         #19292C;
+  --color-elevated:     #203337;
+  --color-border:       #304448;
+  --color-border-subtle:#243438;
+
+  --color-text-primary:   #F0EEE5;
+  --color-text-secondary: #9BAEAA;
+  --color-text-muted:     #607A78;
+  --color-text-inverse:   #101C20;
+
+  --color-accent:         #F08B70;
+  --color-accent-hover:   #E87A5D;
+  --color-accent-subtle:  rgba(240, 139, 112, 0.12);
+
+  --color-success:        #A6C6B2;
+  --color-success-subtle: rgba(166, 198, 178, 0.12);
+  --color-warning:        #D5B17B;
+  --color-warning-subtle: rgba(213, 177, 123, 0.12);
+  --color-danger:         #E27D70;
+  --color-danger-subtle:  rgba(226, 125, 112, 0.12);
+
+  --color-overlay:        rgba(10, 16, 18, 0.72);
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.24);
+  --shadow-md: 0 2px 8px 0 rgb(0 0 0 / 0.32);
+  --shadow-lg: 0 8px 24px 0 rgb(0 0 0 / 0.40);
+}

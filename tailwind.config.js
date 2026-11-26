@@ -1,37 +1,58 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
+  darkMode: ['class', '[data-theme="dark"]'],
   theme: {
     extend: {
       colors: {
-        brand: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          900: '#1e3a8a',
+        bg:       'var(--color-bg)',
+        sidebar:  'var(--color-sidebar)',
+        card:     'var(--color-card)',
+        elevated: 'var(--color-elevated)',
+        border:   'var(--color-border)',
+        accent: {
+          DEFAULT: 'var(--color-accent)',
+          hover:   'var(--color-accent-hover)',
+          subtle:  'var(--color-accent-subtle)',
         },
-        surface: {
-          DEFAULT: '#ffffff',
-          muted: '#f8fafc',
-          subtle: '#f1f5f9',
+        text: {
+          primary:   'var(--color-text-primary)',
+          secondary: 'var(--color-text-secondary)',
+          muted:     'var(--color-text-muted)',
+          inverse:   'var(--color-text-inverse)',
         },
-        border: {
-          DEFAULT: '#e2e8f0',
-          strong: '#cbd5e1',
-        },
+        success: 'var(--color-success)',
+        warning: 'var(--color-warning)',
+        danger:  'var(--color-danger)',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
+        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
       },
       fontSize: {
         '2xs': ['0.625rem', { lineHeight: '1rem' }],
+        '3xs': ['0.5625rem', { lineHeight: '0.875rem' }],
+      },
+      spacing: {
+        sidebar: 'var(--sidebar-width)',
+        'sidebar-collapsed': 'var(--sidebar-collapsed-width)',
+        topbar: 'var(--topbar-height)',
+      },
+      borderRadius: {
+        sm: 'var(--radius-sm)',
+        md: 'var(--radius-md)',
+        lg: 'var(--radius-lg)',
+        xl: 'var(--radius-xl)',
       },
       boxShadow: {
-        card: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-        'card-hover': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+        sm: 'var(--shadow-sm)',
+        md: 'var(--shadow-md)',
+        lg: 'var(--shadow-lg)',
+      },
+      transitionDuration: {
+        fast: '120ms',
+        base: '200ms',
+        slow: '320ms',
       },
     },
   },

@@ -1,107 +1,72 @@
-import { NavLink } from 'react-router-dom';
-import {
-  LayoutDashboard,
-  ArrowLeftRight,
-  FileText,
-  FolderOpen,
-  GitCompare,
-  AlertTriangle,
-  RotateCcw,
-  Users,
-  Building2,
-  CreditCard,
-  CheckSquare,
-  BarChart3,
-  ScrollText,
-  Bell,
-  Monitor,
-  Settings,
-  ChevronDown,
-} from 'lucide-react';
 import { useState } from 'react';
-import { APP_NAME } from '@/constants';
+import { NavLink } from 'react-router-dom';
+import { ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { getNavForRole, NavGroup } from '@/permissions/navigation';
+import { ROLE_LABELS } from '@/permissions/roles';
 
-interface NavItem {
-  to: string;
-  icon: React.ElementType;
-  label: string;
+interface SidebarGroupProps {
+  group: NavGroup;
+  collapsed: boolean;
 }
 
-interface NavSection {
-  title: string;
-  items: NavItem[];
-}
-
-const navSections: NavSection[] = [
-  {
-    title: 'Overview',
-    items: [
-      { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    ],
-  },
-  {
-    title: 'Financial Operations',
-    items: [
-      { to: '/transactions', icon: ArrowLeftRight, label: 'Transactions' },
-      { to: '/settlements', icon: FileText, label: 'Settlements' },
-      { to: '/file-management', icon: FolderOpen, label: 'File Management' },
-      { to: '/reconciliation', icon: GitCompare, label: 'Reconciliation' },
-      { to: '/discrepancies', icon: AlertTriangle, label: 'Discrepancies' },
-      { to: '/refunds', icon: RotateCcw, label: 'Refunds' },
-    ],
-  },
-  {
-    title: 'Management',
-    items: [
-      { to: '/users', icon: Users, label: 'Users & Roles' },
-      { to: '/organizations', icon: Building2, label: 'Organizations' },
-      { to: '/payment-providers', icon: CreditCard, label: 'Payment Providers' },
-      { to: '/approvals', icon: CheckSquare, label: 'Approvals' },
-    ],
-  },
-  {
-    title: 'Insights & System',
-    items: [
-      { to: '/reports', icon: BarChart3, label: 'Reports' },
-      { to: '/audit-logs', icon: ScrollText, label: 'Audit Logs' },
-      { to: '/notifications', icon: Bell, label: 'Notifications' },
-      { to: '/system-monitoring', icon: Monitor, label: 'System Monitoring' },
-    ],
-  },
-];
-
-function NavSection({ section }: { section: NavSection }) {
-  const [collapsed, setCollapsed] = useState(false);
+function SidebarGroup({ group, collapsed }: SidebarGroupProps) {
+  const [open, setOpen] = useState(true);
 
   return (
     <div className="mb-1">
-      <button
-        onClick={() => setCollapsed(!collapsed)}
-        className="w-full flex items-center justify-between px-3 py-1.5 text-2xs font-semibold uppercase tracking-widest text-slate-500 hover:text-slate-300 transition-colors"
-      >
-        {section.title}
-        <ChevronDown
-          size={12}
-          className={`transition-transform ${collapsed ? '-rotate-90' : ''}`}
-        />
-      </button>
-
       {!collapsed && (
+        <button
+          onClick={() => setOpen(!open)}
+          className="w-full flex items-center justify-between px-3 py-1.5 mb-0.5"
+          style={{ color: 'var(--color-text-muted)' }}
+        >
+          <span className="text-2xs font-semibold uppercase tracking-widest">{group.title}</span>
+          <ChevronDown
+            size={11}
+            className="transition-transform duration-base"
+            style={{ transform: open ? 'rotate(0deg)' : 'rotate(-90deg)' }}
+          />
+        </button>
+      )}
+
+      {(open || collapsed) && (
         <div className="space-y-0.5">
-          {section.items.map(({ to, icon: Icon, label }) => (
+          {group.items.map((item) => (
             <NavLink
-              key={to}
-              to={to}
+              key={item.id}
+              to={item.path}
+              title={collapsed ? item.label : undefined}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
+                `flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors duration-fast ${
+                  collapsed ? 'justify-center' : ''
+                } ${
                   isActive
-                    ? 'bg-brand-600 text-white'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    ? 'text-text-inverse font-medium'
+                    : 'hover:opacity-100'
                 }`
               }
+              style={({ isActive }) => ({
+                backgroundColor: isActive ? 'var(--color-accent)' : 'transparent',
+                color: isActive ? 'var(--color-text-inverse)' : 'var(--color-text-secondary)',
+              })}
+              onMouseEnter={(e) => {
+                const el = e.currentTarget;
+                if (!el.style.backgroundColor.includes('accent')) {
+                  el.style.backgroundColor = 'var(--color-elevated)';
+                  el.style.color = 'var(--color-text-primary)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget;
+                if (!el.style.backgroundColor.includes('accent')) {
+                  el.style.backgroundColor = 'transparent';
+                  el.style.color = 'var(--color-text-secondary)';
+                }
+              }}
             >
-              <Icon size={15} />
-              <span>{label}</span>
+              <item.icon size={15} className="shrink-0" />
+              {!collapsed && <span className="truncate">{item.label}</span>}
             </NavLink>
           ))}
         </div>
@@ -111,55 +76,98 @@ function NavSection({ section }: { section: NavSection }) {
 }
 
 export function Sidebar() {
+  const { user } = useAuth();
+  const [collapsed, setCollapsed] = useState(false);
+  const navGroups = user ? getNavForRole(user.role) : [];
+
   return (
-    <aside className="w-60 shrink-0 bg-slate-900 text-slate-100 flex flex-col h-screen sticky top-0">
+    <aside
+      className="flex flex-col h-screen sticky top-0 shrink-0 transition-all duration-slow"
+      style={{
+        width: collapsed ? 'var(--sidebar-collapsed-width)' : 'var(--sidebar-width)',
+        backgroundColor: 'var(--color-sidebar)',
+        borderRight: '1px solid var(--color-border)',
+      }}
+    >
       {/* Logo */}
-      <div className="px-5 py-4 border-b border-slate-700/60">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-md bg-brand-600 flex items-center justify-center">
-            <GitCompare size={14} className="text-white" />
+      <div
+        className="flex items-center justify-between px-4 shrink-0"
+        style={{
+          height: 'var(--topbar-height)',
+          borderBottom: '1px solid var(--color-border)',
+        }}
+      >
+        {!collapsed && (
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div
+              className="w-6 h-6 rounded flex items-center justify-center shrink-0 text-xs font-bold"
+              style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text-inverse)' }}
+            >
+              F
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold truncate" style={{ color: 'var(--color-text-primary)' }}>
+                FinSight
+              </p>
+              <p className="text-2xs truncate" style={{ color: 'var(--color-text-muted)' }}>
+                {user?.organizationName}
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm font-semibold text-white leading-none">{APP_NAME}</p>
-            <p className="text-2xs text-slate-400 mt-0.5">Admin Panel</p>
+        )}
+        {collapsed && (
+          <div
+            className="w-6 h-6 rounded flex items-center justify-center mx-auto text-xs font-bold"
+            style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-text-inverse)' }}
+          >
+            F
           </div>
-        </div>
+        )}
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="p-1 rounded transition-colors duration-fast shrink-0"
+          style={{ color: 'var(--color-text-muted)' }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--color-elevated)';
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+          }}
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+        </button>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 overflow-y-auto space-y-3 scrollbar-thin">
-        {navSections.map((section) => (
-          <NavSection key={section.title} section={section} />
+      <nav className="flex-1 overflow-y-auto px-2 py-3 space-y-3">
+        {navGroups.map((group) => (
+          <SidebarGroup key={group.id} group={group} collapsed={collapsed} />
         ))}
       </nav>
 
-      {/* Settings */}
-      <div className="px-3 py-3 border-t border-slate-700/60">
-        <NavLink
-          to="/settings"
-          className={({ isActive }) =>
-            `flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
-              isActive
-                ? 'bg-brand-600 text-white'
-                : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-            }`
-          }
-        >
-          <Settings size={15} />
-          Settings
-        </NavLink>
-      </div>
-
       {/* User */}
-      <div className="px-4 py-3 border-t border-slate-700/60 bg-slate-800/50">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center text-white text-xs font-semibold shrink-0">
-            A
+      <div
+        className="px-3 py-3 shrink-0"
+        style={{ borderTop: '1px solid var(--color-border)' }}
+      >
+        <div className={`flex items-center gap-2.5 ${collapsed ? 'justify-center' : ''}`}>
+          <div
+            className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold shrink-0"
+            style={{ backgroundColor: 'var(--color-accent-subtle)', color: 'var(--color-accent)' }}
+          >
+            {user?.name.charAt(0) ?? 'U'}
           </div>
-          <div className="min-w-0">
-            <p className="text-sm font-medium text-white truncate">Admin User</p>
-            <p className="text-2xs text-slate-400 truncate">Organization Admin</p>
-          </div>
+          {!collapsed && (
+            <div className="min-w-0">
+              <p className="text-xs font-medium truncate" style={{ color: 'var(--color-text-primary)' }}>
+                {user?.name}
+              </p>
+              <p className="text-2xs truncate" style={{ color: 'var(--color-text-muted)' }}>
+                {user ? ROLE_LABELS[user.role] : ''}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </aside>

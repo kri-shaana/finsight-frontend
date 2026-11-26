@@ -1,0 +1,32 @@
+/* FinSight — Warm Ivory Light Theme */
+
+[data-theme='light'] {
+  --color-bg:           #F5F1E9;
+  --color-sidebar:      #FDFBF5;
+  --color-card:         #FFFDF7;
+  --color-elevated:     #F0EBE1;
+  --color-border:       #E7DFD2;
+  --color-border-subtle:#EDE8DF;
+
+  --color-text-primary:   #202D2D;
+  --color-text-secondary: #85847C;
+  --color-text-muted:     #A8A49C;
+  --color-text-inverse:   #FFFDF7;
+
+  --color-accent:         #C65D43;
+  --color-accent-hover:   #B34E36;
+  --color-accent-subtle:  rgba(198, 93, 67, 0.08);
+
+  --color-success:        #477B66;
+  --color-success-subtle: rgba(71, 123, 102, 0.08);
+  --color-warning:        #B78A48;
+  --color-warning-subtle: rgba(183, 138, 72, 0.08);
+  --color-danger:         #BE5145;
+  --color-danger-subtle:  rgba(190, 81, 69, 0.08);
+
+  --color-overlay:        rgba(32, 45, 45, 0.48);
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.06);
+  --shadow-md: 0 2px 8px 0 rgb(0 0 0 / 0.08);
+  --shadow-lg: 0 8px 24px 0 rgb(0 0 0 / 0.10);
+}
